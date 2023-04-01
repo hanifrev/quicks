@@ -1,9 +1,19 @@
 import React from "react";
+import MessageList from "./MessageList";
 
 const ModalInbox = ({ isModalOpen }) => {
   return (
     isModalOpen && (
-      <div className="w-[200px] h-[200px] bg-white absolute">ModalInbox</div>
+      <div id="modalInbox" className=" bg-white">
+        <div className="flex flex-row">
+          <input
+            type="search"
+            className="bg-transparent mt-5 mx-auto p-[10px] text-black flex"
+            placeholder="Search"
+          />
+        </div>
+        <MessageList />
+      </div>
     )
   );
 };
