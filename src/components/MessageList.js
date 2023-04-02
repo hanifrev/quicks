@@ -5,7 +5,7 @@ import Image from "next/image";
 import messageIcon from "../assets/messageIcon.svg";
 import moment from "moment";
 
-const MessageList = ({ openMessage, messageId }) => {
+const MessageList = ({ openMessage, messageId, classList }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -44,7 +44,7 @@ const MessageList = ({ openMessage, messageId }) => {
           </span>
         </>
       ) : (
-        <div id="messageList" className="text-black ">
+        <div id="messageList" className={`${classList}text-black `}>
           {data &&
             data.map((x, index) => {
               return (

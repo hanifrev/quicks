@@ -9,12 +9,10 @@ const MessageDetail = ({ id, onClose }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      //   setLoading(true);
       const result = await axios.get(
         `https://64292bae5a40b82da4cdd907.mockapi.io/message/${id}`
       );
       setData(result.data);
-      //   setLoading(false);
     };
     fetchData();
   }, []);
@@ -22,8 +20,8 @@ const MessageDetail = ({ id, onClose }) => {
   console.log(data);
 
   return (
-    <div id="modalInboxDetail" className=" bg-white py-6 px-8">
-      <div className="flex flex-row border-b-2">
+    <div id="modalInboxDetail" className=" bg-white py-[19.5px] px-8">
+      <div className="flex flex-row ">
         <div className="cursor-pointer flex" onClick={() => onClose(false)}>
           <Image src={back} alt="img" />
         </div>
@@ -32,12 +30,24 @@ const MessageDetail = ({ id, onClose }) => {
             <div className="text-[#2F80ED] font-bold pb-[9.36px]">
               {data && data.title}
             </div>
-            <div className="text-xs text-black">{data.id} participant</div>
+            <div className="text-xs font-light text-black">
+              {data.id} participant
+            </div>
           </div>
           <div className="cursor-pointer flex" onClick={() => onClose(false)}>
             <Image src={close} alt="img" />
           </div>
         </div>
+      </div>
+      <div className="chatList">chat</div>
+      <div className="fieldChat flex flex-row ">
+        <form className="flex gap-[17px]">
+          <input
+            className="bg-transparent text-black"
+            placeholder="Type a new message"
+          />
+          <button>Send</button>
+        </form>
       </div>
     </div>
   );

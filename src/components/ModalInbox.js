@@ -10,7 +10,7 @@ const ModalInbox = ({ isModalOpen }) => {
 
   return (
     isModalOpen && (
-      <div id="modalInbox" className=" bg-white py-6 px-8">
+      <div id="modalInbox" className={` bg-white py-6 px-8`}>
         <div className="flex flex-row">
           <input
             type="search"
@@ -18,6 +18,7 @@ const ModalInbox = ({ isModalOpen }) => {
             placeholder="Search"
           />
         </div>
+
         <MessageList openMessage={setDetailMessage} messageId={setIdMessage} />
         {detailMessage && (
           <MessageDetail onClose={setDetailMessage} id={idMessage} />
