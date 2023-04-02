@@ -4,6 +4,7 @@ import MessageList from "./MessageList";
 
 const ModalInbox = ({ isModalOpen }) => {
   const [detailMessage, setDetailMessage] = useState(false);
+  const [idMessage, setIdMessage] = useState("");
 
   console.log(detailMessage);
 
@@ -17,8 +18,10 @@ const ModalInbox = ({ isModalOpen }) => {
             placeholder="Search"
           />
         </div>
-        <MessageList openMessage={setDetailMessage} />
-        {detailMessage && <MessageDetail onClose={setDetailMessage} />}
+        <MessageList openMessage={setDetailMessage} messageId={setIdMessage} />
+        {detailMessage && (
+          <MessageDetail onClose={setDetailMessage} id={idMessage} />
+        )}
       </div>
     )
   );

@@ -5,7 +5,7 @@ import Image from "next/image";
 import messageIcon from "../assets/messageIcon.svg";
 import moment from "moment";
 
-const MessageList = ({ openMessage }) => {
+const MessageList = ({ openMessage, messageId }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -21,7 +21,12 @@ const MessageList = ({ openMessage }) => {
     fetchData();
   }, []);
 
-  console.log(data);
+  // console.log(data);
+
+  const handleMessageDetail = (id) => {
+    openMessage(true);
+    messageId(id);
+  };
 
   return (
     <>
@@ -46,13 +51,13 @@ const MessageList = ({ openMessage }) => {
                 index < 4 && (
                   <div className="flex flex-row border-b-2">
                     <div className="pr-[17px]">
-                      <Image src={messageIcon} />
+                      <Image src={messageIcon} alt="img" />
                     </div>
                     <div className="flex flex-col pb-[22px]">
                       <div className="flex flex-row gap-4">
                         <span
                           className="text-[#2F80ED] font-bold cursor-pointer"
-                          onClick={() => openMessage(true)}
+                          onClick={() => handleMessageDetail(x.id)}
                         >
                           {x.title.substring(0, 35)}
                         </span>
