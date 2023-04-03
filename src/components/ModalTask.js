@@ -9,6 +9,7 @@ const options = [
 
 const ModalTask = ({ isModalOpen }) => {
   const [selectedOption, setSelectedOption] = useState(null);
+  const [newTask, setNewTask] = useState(false);
 
   const handleSelect = (option) => {
     setSelectedOption(option);
@@ -16,17 +17,14 @@ const ModalTask = ({ isModalOpen }) => {
 
   return (
     isModalOpen && (
-      <div id="modalTask" className=" bg-blue-200 py-6 px-8">
+      <div id="modalTask" className=" bg-white py-6 px-8">
         <div className="flex flex-row justify-between header pb-[22px]">
           <div>
             <CustomDropdown options={options} onSelect={handleSelect} />
-            {/* <p>
-              Selected option: {selectedOption ? selectedOption.label : "none"}
-            </p> */}
           </div>
-          <button>New Task</button>
+          <button onClick={() => setNewTask(!newTask)}>New Task</button>
         </div>
-        <Todo />
+        <Todo addTask={newTask} />
       </div>
     )
   );
