@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import CustomDropdown from "./Dropdown";
 import Todo from "./Todo";
+import expand from "../assets/expand.svg";
+import Image from "next/image";
 
 const options = [
   { value: "personal errands", label: "Personal Errands" },
@@ -21,6 +23,7 @@ const ModalTask = ({ isModalOpen }) => {
         <div className="flex flex-row justify-between header pb-[22px]">
           <div>
             <CustomDropdown options={options} onSelect={handleSelect} />
+            <Image src={expand} alt="img" className="-mt-[29px] ml-[168px]" />
           </div>
           <button onClick={() => setNewTask(!newTask)}>New Task</button>
         </div>

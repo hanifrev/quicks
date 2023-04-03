@@ -6,16 +6,34 @@ import clock from "../assets/clock.svg";
 import description from "../assets/description.svg";
 import expand from "../assets/expand.svg";
 import more from "../assets/more.svg";
+import calendarIcon from "../assets/calendarIcon.svg";
 import moment from "moment";
 
 const Todo = ({ addTask }) => {
   const [inputValue, setInputValue] = useState("");
-  const [todos, setTodos] = useState([]);
   const [dueDate, setDueDate] = useState(null);
   const [desc, setDesc] = useState("");
   const [theForm, setTheForm] = useState(false);
   const [accordion, setAccordion] = useState(null);
   const [deletePop, setDeletePop] = useState(null);
+  const [todos, setTodos] = useState([
+    {
+      id: 1,
+      text: "Buy new Opeth CD",
+      dueDate: new Date("2023-04-20"),
+      completed: false,
+      description: "",
+    },
+    {
+      id: 2,
+      text: "Moshing",
+      dueDate: new Date(),
+      completed: true,
+      description: "blast cattle decapitation until your neighbor angry",
+    },
+  ]);
+
+  console.log(todos);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -167,12 +185,6 @@ const Todo = ({ addTask }) => {
                 >
                   <Image src={expand} alt="img" />
                 </div>
-                {/* <div
-                  className="deletePopup text-red-600"
-                  onClick={() => deleteTodo(index)}
-                >
-                  Delete
-                </div> */}
                 <div
                   className="mt-[13px]"
                   onClick={() => handleDeletePop(index)}
@@ -199,6 +211,11 @@ const Todo = ({ addTask }) => {
                     onChange={(date) => handleCalendar(date, index)}
                     className="bg-transparent datePick"
                   />
+                  <Image
+                    src={calendarIcon}
+                    alt="img"
+                    className="absolute mt-3 ml-[203px]"
+                  />
                 </div>
                 <div className="flex flex-row pl-9 pt-[13px]">
                   <Image
@@ -210,7 +227,9 @@ const Todo = ({ addTask }) => {
                     value={todo.description}
                     placeholder="No Description"
                     onChange={(e) => handleDescription(e, index)}
-                    className="bg-transparent p-[15px] ml-1"
+                    className={`bg-transparent p-[15px] ml-1 w-[543px] ${
+                      todo.description == 0 ? "" : "descActive"
+                    }`}
                   />
                 </div>
               </div>
