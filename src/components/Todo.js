@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import ReactLoading from "react-loading";
 import Image from "next/image";
 import clock from "../assets/clock.svg";
 import description from "../assets/description.svg";
@@ -8,72 +9,99 @@ import expand from "../assets/expand.svg";
 import more from "../assets/more.svg";
 import calendarIcon from "../assets/calendarIcon.svg";
 import moment from "moment";
+import axios from "axios";
+import { debounce } from "lodash";
 
-const Todo = ({ addTask }) => {
+const Todo = ({ addTask, todoData }) => {
   const [inputValue, setInputValue] = useState("");
-  const [dueDate, setDueDate] = useState(null);
-  const [desc, setDesc] = useState("");
+  const [date, setDate] = useState(null);
+  const [desc, setDesc] = useState([]);
+  const [checked, setCheked] = useState(false);
   const [theForm, setTheForm] = useState(false);
   const [accordion, setAccordion] = useState(null);
   const [deletePop, setDeletePop] = useState(null);
-  const [todos, setTodos] = useState([
-    {
-      id: 1,
-      text: "Buy new Opeth CD",
-      dueDate: new Date("2023-04-20"),
-      completed: false,
-      description: "",
-    },
-    {
-      id: 2,
-      text: "Moshing",
-      dueDate: new Date(),
-      completed: true,
-      description: "blast cattle decapitation until your neighbor angry",
-    },
-  ]);
+  const [todos, setTodos] = useState([]);
 
-  console.log(todos);
+  const baseURL = `https://64292bae5a40b82da4cdd907.mockapi.io/todo`;
 
-  const handleSubmit = (e) => {
+  const getTodo = async () => {
+    const res = await axios.get(baseURL);
+    setTodos(res.data);
+  };
+
+  useEffect(() => {
+    getTodo();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setTodos([
-      ...todos,
-      { text: inputValue, completed: false, dueDate, description: desc },
-    ]);
+    await axios.post(baseURL, {
+      title: inputValue,
+      date: date,
+      description: desc,
+      completed: false,
+    });
     setInputValue("");
-    setDueDate(null);
+    setDate(null);
     setDesc("");
     setTheForm(false);
+    getTodo();
   };
 
   useEffect(() => {
     setTheForm(addTask);
   }, [addTask]);
 
-  const handleCheckbox = (index) => {
-    const newTodos = [...todos];
-    newTodos[index].completed = !newTodos[index].completed;
-    setTodos(newTodos);
+  // useEffect(() => {
+  //   setCheked(!checked);
+  // }, [checked]);
+
+  const handleCheckbox = async (id) => {
+    await axios.put(`${baseURL}/${id}`, {
+      completed: true,
+    });
+    // if (checked == true) {
+    //   await axios.put(`${baseURL}/${id}`, {
+    //     completed: false,
+    //   });
+    // } else if (checked == false) {
+    //   await axios.put(`${baseURL}/${id}`, {
+    //     completed: true,
+    //   });
+    // }
+    getTodo();
   };
 
-  const handleCalendar = (date, index) => {
+  const handleCalendar = (date, index, id) => {
     const newTodos = [...todos];
-    newTodos[index].dueDate = date;
+    newTodos[index].date = date;
     setTodos(newTodos);
+    sendDateUpdate(id, date);
   };
 
-  const handleDescription = (e, index) => {
-    const newTodos = [...todos];
-    newTodos[index].description = e.target.value;
-    setTodos(newTodos);
+  const sendDateUpdate = (id, date) => {
+    axios.put(`${baseURL}/${id}`, {
+      date: date,
+    });
   };
 
-  const deleteTodo = (index) => {
-    const newTodos = [...todos];
-    newTodos.splice(index, 1);
-    setTodos(newTodos);
+  const handleDescription = (e, index, id) => {
+    const updatedTasks = [...todos];
+    updatedTasks[index].description = e.target.value;
+    setDesc(updatedTasks);
+    sendTaskUpdate(id, e.target.value);
+  };
+
+  const sendTaskUpdate = debounce((id, taskDescription) => {
+    axios.put(`${baseURL}/${id}`, {
+      description: taskDescription,
+    });
+  }, 3000);
+
+  const deleteTodo = async (id) => {
+    await axios.delete(`${baseURL}/${id}`);
+    getTodo();
   };
 
   const handleAccordion = (index) => {
@@ -107,8 +135,8 @@ const Todo = ({ addTask }) => {
             <Image src={clock} alt="img" className="w-[20px] mr-[18px]" />
             <DatePicker
               placeholderText="Set Date"
-              selected={dueDate}
-              onChange={(date) => setDueDate(date)}
+              selected={date}
+              onChange={(date) => setDate(date)}
               className="bg-transparent datePick text-black"
             />
           </div>
@@ -133,12 +161,22 @@ const Todo = ({ addTask }) => {
       )}
 
       {todos <= 0 ? (
-        <div className="text-[#828282] text-center pt-14">
-          No task, press New Task to add new one
+        <div className="text-[#828282] text-center ">
+          {/* No task, press New Task to add new one */}
+          <ReactLoading
+            className="mx-auto pt-[200px]"
+            type="spin"
+            color="#C4C4C4"
+            height={64}
+            width={64}
+          />
+          <span className="text-[#4f4f4f] flex justify-center pt-[5.5rem] font-medium">
+            Loading Todo List ...
+          </span>
         </div>
       ) : (
         todos.map((todo, index) => (
-          <div key={index} className="todo-item text-black flex flex-col">
+          <div key={todo.id} className="todo-item text-black flex flex-col">
             <div
               className={`flex flex-row justify-between ${
                 accordion == index ? "pb-3" : "pb-[19.5px]"
@@ -148,7 +186,7 @@ const Todo = ({ addTask }) => {
                 <input
                   type="checkbox"
                   checked={todo.completed}
-                  onChange={() => handleCheckbox(index)}
+                  onChange={() => handleCheckbox(todo.id)}
                   className="check"
                 />
                 <p
@@ -157,7 +195,7 @@ const Todo = ({ addTask }) => {
                     textDecoration: todo.completed ? "line-through" : "none",
                   }}
                 >
-                  {todo.text}
+                  {todo.title}
                 </p>
               </label>
               <div className="flex flex-row">
@@ -167,7 +205,7 @@ const Todo = ({ addTask }) => {
                     textDecoration: todo.completed ? "line-through" : "none",
                   }}
                 >
-                  {moment(todo.dueDate).diff(moment(), "days")} days left
+                  {moment(todo.date).diff(moment(), "days")} days left
                 </div>
                 <div
                   className="text-sm mr-[10px] mt-1"
@@ -175,7 +213,7 @@ const Todo = ({ addTask }) => {
                     textDecoration: todo.completed ? "line-through" : "none",
                   }}
                 >
-                  {moment(todo.dueDate).format("MM/DD/YYYY")}
+                  {moment(todo.date).format("MM/DD/YYYY")}
                 </div>
                 <div
                   className={`mr-[10px] pt-[5px] ${
@@ -193,7 +231,7 @@ const Todo = ({ addTask }) => {
                   {deletePop == index && (
                     <div
                       className="deletePopup text-red-600"
-                      onClick={() => deleteTodo(index)}
+                      onClick={() => deleteTodo(todo.id)}
                     >
                       Delete
                     </div>
@@ -207,15 +245,15 @@ const Todo = ({ addTask }) => {
                 <div className="flex flex-row pl-9">
                   <Image src={clock} alt="img" className="w-[20px] mr-[18px]" />
                   <DatePicker
-                    selected={todo.dueDate}
-                    onChange={(date) => handleCalendar(date, index)}
+                    selected={new Date(todo.date)}
+                    onChange={(date) => handleCalendar(date, index, todo.id)}
                     className="bg-transparent datePick"
                   />
-                  <Image
+                  {/* <Image
                     src={calendarIcon}
                     alt="img"
                     className="absolute mt-3 ml-[203px]"
-                  />
+                  /> */}
                 </div>
                 <div className="flex flex-row pl-9 pt-[13px]">
                   <Image
@@ -226,7 +264,11 @@ const Todo = ({ addTask }) => {
                   <textarea
                     value={todo.description}
                     placeholder="No Description"
-                    onChange={(e) => handleDescription(e, index)}
+                    // onChange={(e) => handleDescription(e, index, todo.id)}
+                    onChange={(e) => {
+                      handleDescription(e, index, todo.id);
+                      sendTaskUpdate(todo.id, e.target.value);
+                    }}
                     className={`bg-transparent p-[15px] ml-1 w-[543px] ${
                       todo.description == 0 ? "" : "descActive"
                     }`}
