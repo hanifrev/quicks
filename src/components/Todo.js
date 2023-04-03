@@ -230,7 +230,7 @@ const Todo = ({ addTask, todoData }) => {
                   <Image src={more} alt="img" />
                   {deletePop == index && (
                     <div
-                      className="deletePopup text-red-600"
+                      className="deletePopup text-red-600 cursor-pointer  "
                       onClick={() => deleteTodo(todo.id)}
                     >
                       Delete
