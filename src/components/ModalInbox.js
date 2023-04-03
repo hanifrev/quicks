@@ -10,7 +10,7 @@ const ModalInbox = ({ isModalOpen }) => {
 
   return (
     isModalOpen && (
-      <div id="modalInbox" className={` bg-white py-6 px-8`}>
+      <div id="modalInbox" className={`bg-white py-6 px-8`}>
         <div className="flex flex-row">
           <input
             type="search"

@@ -19,7 +19,7 @@ const MenuBtn = ({ inboxOpen, taskOpen }) => {
         } pt-6`}
         onClick={() => setShowMenu(!showMenu)}
       >
-        <Image src={quickBtn} />
+        <Image src={quickBtn} alt="img" />
       </div>
       {showMenu && (
         <div className="flex flex-row-reverse gap-[26px] ">
@@ -41,7 +41,11 @@ const MenuBtn = ({ inboxOpen, taskOpen }) => {
             >
               Inbox
             </p>
-            <Image src={showInbox ? inboxOn : inboxOff} className=" " />
+            <Image
+              src={showInbox ? inboxOn : inboxOff}
+              className=" "
+              alt="img"
+            />
           </div>
 
           <div
@@ -62,7 +66,7 @@ const MenuBtn = ({ inboxOpen, taskOpen }) => {
             >
               Task
             </p>
-            <Image src={showTask ? taskOn : taskOff} />
+            <Image src={showTask ? taskOn : taskOff} alt="img" />
           </div>
         </div>
       )}
