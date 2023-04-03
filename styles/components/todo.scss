@@ -64,5 +64,17 @@
       padding: 15px;
       width: 193px;
     }
+
+    .deletePopup {
+      height: 43px;
+      width: 126px;
+      border: 1px solid #828282;
+      border-radius: 5px;
+      position: absolute;
+      padding: 8px 18px;
+      background: white;
+      margin-top: 6px;
+      margin-left: -110px;
+    }
   }
 }
